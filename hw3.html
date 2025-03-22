@@ -32,65 +32,66 @@
 
 			<br>
 
-			Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+			Link to webpage: <a href="https://crashdotcom.github.io/cs184/hw3"> that's me !'</a>
 			Link to GitHub repository: <a href="https://github.com/cal-cs184-student/sp25-hw3-vivian-jay/">GitHub repo</a>
 
 			<!--<figure>
-				<img src="images/example_image.png" alt="Cornell Boxes with Bunnies" style="width:70%" />
-				<figcaption>You can add images with captions!</figcaption>
-			</figure>-->
-
+		<img src="images/example_image.png" alt="Cornell Boxes with Bunnies" style="width:70%" />
+		<figcaption>You can add images with captions!</figcaption>
+	</figure>-->
 			<!--
 	We've already added one heading per part, to make your write-up as navigable when grading. Please fit your write-up within these sections!
 	-->
 
 			<h2>Overview</h2>
 			Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+			<p>
+				In this homework, I learned how to rasterize 3-D objects and different lighting patterns. I learned the importance of reflection, direction, world to object transforms, and how subtle lighting shifts can create a huge difference in the output. I also implemented some interesting algorithms, like Russian Roulette.
+			</p>
 
 			<h2>Part 1: Ray Generation and Scene Intersection</h2>
 
-			To generate rays, we needed to first take the input coordinates and transform them to camera space. After that, it needed to be transformed into world space. This was done through a series of matrix transforms. Implementation of primitive intersects were different for triangle and sphere intersections. For triangle intersections, I used the M�ller-Trumbore algorithm to efficiently calculate if the input ray intersected with the triangle. Then, for spheres, I used the formula described in class with the quadratic formula. This allowed me to find the t at which the two intersected, if at all. Using the resulting values, I updated min_t and max_t for each ray in the correct functions.
-
-			<br/>
+			To generate rays, we needed to first take the input coordinates and transform them to camera space. After that, it needed to be transformed into world space. This was done through a series of matrix transforms. Implementation of primitive intersects were different for triangle and sphere intersections. For triangle intersections, I used the Möller-Trumbore algorithm to efficiently calculate if the input ray intersected with the triangle. Then, for spheres, I used the formula described in class with the quadratic formula. This allowed me to find the t at which the two intersected, if at all. Using the resulting values, I updated min_t and max_t for each ray in the correct functions.
+			<br />
 
 			For some reason some of the .dae such as bunny is rendered off the scene (as shown in the image below).
 			We ran out of time to debug it.
 
 			<figure>
 				<img src="images/CBempty.png" alt="Empty Box" style="width:70%" />
-				
+
 			</figure>
 
 			<!--<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
-			<div style="display: flex; flex-direction: column; align-items: center;">
-				<table style="width: 100%; text-align: center; border-collapse: collapse;">
-					<tr>
-						<td style="text-align: center;">
-							<img src="images/example_image.png" width="400px" />
-							<figcaption>Caption goes here.</figcaption>
-						</td>
-						<td style="text-align: center;">
-							<img src="images/example_image.png" width="400px" />
-							<figcaption>Caption goes here.</figcaption>
-						</td>
-					</tr>
-					<tr>
-						<td style="text-align: center;">
-							<img src="images/example_image.png" width="400px" />
-							<figcaption>Caption goes here.</figcaption>
-						</td>
-						<td style="text-align: center;">
-							<img src="images/example_image.png" width="400px" />
-							<figcaption>Caption goes here.</figcaption>
-						</td>
-					</tr>
-				</table>
-			</div>-->
+	<div style="display: flex; flex-direction: column; align-items: center;">
+		<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			<tr>
+				<td style="text-align: center;">
+					<img src="images/example_image.png" width="400px" />
+					<figcaption>Caption goes here.</figcaption>
+				</td>
+				<td style="text-align: center;">
+					<img src="images/example_image.png" width="400px" />
+					<figcaption>Caption goes here.</figcaption>
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align: center;">
+					<img src="images/example_image.png" width="400px" />
+					<figcaption>Caption goes here.</figcaption>
+				</td>
+				<td style="text-align: center;">
+					<img src="images/example_image.png" width="400px" />
+					<figcaption>Caption goes here.</figcaption>
+				</td>
+			</tr>
+		</table>
+	</div>-->
 
 			<h2>Part 2: Bounding Volume Hierarchy</h2>
-	
+
 			<p>
-				The heuristic I chose for picking the splitting point was along the longest axis. That is, I went through all the primitives and recorded the maximum and minimum x, y, and z values as well as the average of the centroids. Then, I divided the primitives up based on whether or not their centroids or larger than or less than the average value. 
+				The heuristic I chose for picking the splitting point was along the longest axis. That is, I went through all the primitives and recorded the maximum and minimum x, y, and z values as well as the average of the centroids. Then, I divided the primitives up based on whether or not their centroids or larger than or less than the average value.
 			</p>
 
 			<table>
@@ -109,6 +110,54 @@
 			The screenshots show the amount of time it took to render the cow on my local machine before and after implementing the BVH acceleration. You can see that it goes from taking 134 seconds to just 12. The number of average intersection tests goes down as well, indicating that the algorithm is much more efficient.
 
 			<h2>Part 3: Direct Illumination</h2>
+
+			<p>
+				Direct lighting with uniform hemisphere sampling: we know that the light being reflected from any point to another point is going to be the same. Therefore, I could just sample across the entire hemisphere instead of the individual lights in the scene. I still randomly sampled from the hemisphere, though. I had to add epsilon values to my shadow ray and its min/max values in case of overlap. Then, I checked if the shadow intersected any objects. I accumulated the radiance over all the objects, normalized it using the PDF, and returned the value.
+			</p>
+
+			<p>
+				Direct lighting with importance sampling: since this only samples from the lights, it creates less noise as we are not checking where the light does not hit. Using the same reflectance equation as uniform hemisphere sampling, we were able to calculate whether or not a shadow ray intersected with an object in the scene, as well as the total outgoing light. We also used is_delta_light() to check whether or not the light was a point light, and epsilon values to account for overlapping values and potential floating point errors. Finally, we implemented a simple check in one_bounce_radiance to return either hemisphere or importance sampling. We made sure to multiply it by the normalizing factors, like the cosine theta of the ray.
+			</p>
+
+			<p>
+				The difference between hemisphere and importance sampling is that the latter produces a much smoother result than hemisphere sampling. The former samples all areas in the hemisphere, which means that it samples areas that the light doesn't hit and creates extra noise. Importance sampling only samples areas that the light hits, weighting it accordingly. Therefore, the result looks nicer.
+			</p>
+
+			<table>
+				<tr>
+					<td>
+						<img src="images/part3/HEMICBspheres.png" width="400px" />
+					</td>
+					<td>
+						<img src="images/part3/SAMPLEspheres.png" width="400px" />
+					</td>
+				</tr>
+			</table>
+
+			<table>
+				<tr>
+					<td>
+						<img src="images/part3/spheres1.png" width="400px" />
+					</td>
+					<td>
+						<img src="images/part3/spheres4.png" width="400px" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img src="images/part3/spheres8.png" width="400px" />
+					</td>
+					<td>
+						<img src="images/part3/spheres64.png" width="400px" />
+					</td>
+				</tr>
+			</table>
+			<a style="align-self:center"><h3>TL: 1 ray. TR: 4 rays. BL: 8 rays. BR: 64 rays.</h3></a>
+
+			<h2>Part 4: Global Illumination</h2>
+			<p>
+				In this part, I implemented sample_f, using the same logic for f as in part 3 (radiance / PI). I also made sure to assign the correct values to wi and pdf. Then, I recursively implemented at_least_one_bounce_radiance(). I had to create a new ray for each iteration based on the previous input ray's direction. I kept track of the number of bounces through the new ray's depth parameter, decrementing it each time I called the function again.
+			</p>
 			
 			<h3>Indirect Lighting Implementation</h3>
 			<p>
@@ -124,135 +173,103 @@
 			</ul>
 			<img src="images/part4-renders/empty-1024.png" alt="Empty Box" style="width:50%; margin:2px;" />
 			<img src="images/part4-renders/spheres.png" alt="Empty Box" style="width:50%;  margin:2px;" />
-			<img src="images/part4-renders/blob.png" alt="Empty Box" style="width:50%; margin:2px;" />
-			<img src="images/part4-renders/bunny.png" alt="Empty Box" style="width:50%; margin:2px;" />
-			
-    
-    <h3>Global Illumination Rendering</h3>
-    <table>
-        <tr>
-            <th>Direct Illumination</th>
-			<th>Indirect Illumination</th>
-        </tr>
-        <tr>
-            <td><img src="images/part4-renders/direct.png" alt="Global Illumination Render"></td>
-			<td><img src="images/part4-renders/indirect.png" alt="Global Illumination Render"></td>
-        </tr>
-    </table>
-    
-    <h3>Direct vs Indirect Illumination</h3>
-    <table>
-        <tr>
-            <th>Direct Illumination</th>
-            <th>Indirect Illumination</th>
-        </tr>
-        <tr>
-            <td><img src="PLACEHOLDER_DIRECT" alt="Direct Illumination"></td>
-            <td><img src="PLACEHOLDER_INDIRECT" alt="Indirect Illumination"></td>
-        </tr>
-    </table>
-    
-    <h3>Light Bounces Comparison (CBbunny.dae)</h3>
-    <table>
-        <tr>
-            <th>0 Bounces</th>
-            <th>1 Bounce</th>
-            <th>2 Bounces</th>
-            <th>3 Bounces</th>
-            <th>4 Bounces</th>
-            <th>5 Bounces</th>
-        </tr>
-        <tr>
-            <td><img src="PLACEHOLDER_BOUNCE_0" alt="0 Bounces"></td>
-            <td><img src="PLACEHOLDER_BOUNCE_1" alt="1 Bounce"></td>
-            <td><img src="PLACEHOLDER_BOUNCE_2" alt="2 Bounces"></td>
-            <td><img src="PLACEHOLDER_BOUNCE_3" alt="3 Bounces"></td>
-            <td><img src="PLACEHOLDER_BOUNCE_4" alt="4 Bounces"></td>
-            <td><img src="PLACEHOLDER_BOUNCE_5" alt="5 Bounces"></td>
-        </tr>
-    </table>
-    
-    <h3>Accumulated vs Unaccumulated Bounces</h3>
-    <table>
-        <tr>
-            <th>Unaccumulated</th>
-            <th>Accumulated</th>
-        </tr>
-        <tr>
-            <td><img src="PLACEHOLDER_UNACCUMULATED" alt="Unaccumulated"></td>
-            <td><img src="PLACEHOLDER_ACCUMULATED" alt="Accumulated"></td>
-        </tr>
-    </table>
-    
-    <h3>Russian Roulette (CBbunny.dae)</h3>
-    <table>
-        <tr>
-            <th>0 Bounces</th>
-            <th>1 Bounce</th>
-            <th>2 Bounces</th>
-            <th>3 Bounces</th>
-            <th>4 Bounces</th>
-            <th>100 Bounces</th>
-        </tr>
-        <tr>
-            <td><img src="PLACEHOLDER_RR_0" alt="RR 0 Bounces"></td>
-            <td><img src="PLACEHOLDER_RR_1" alt="RR 1 Bounce"></td>
-            <td><img src="PLACEHOLDER_RR_2" alt="RR 2 Bounces"></td>
-            <td><img src="PLACEHOLDER_RR_3" alt="RR 3 Bounces"></td>
-            <td><img src="PLACEHOLDER_RR_4" alt="RR 4 Bounces"></td>
-            <td><img src="PLACEHOLDER_RR_100" alt="RR 100 Bounces"></td>
-        </tr>
-    </table>
-    
-    <h3>Sample Per Pixel Comparison</h3>
-    <table>
-        <tr>
-            <th>1 spp</th>
-            <th>2 spp</th>
-            <th>4 spp</th>
-            <th>8 spp</th>
-            <th>16 spp</th>
-            <th>64 spp</th>
-            <th>1024 spp</th>
-        </tr>
-        <tr>
-            <td><img src="PLACEHOLDER_SPP_1" alt="1 spp"></td>
-            <td><img src="PLACEHOLDER_SPP_2" alt="2 spp"></td>
-            <td><img src="PLACEHOLDER_SPP_4" alt="4 spp"></td>
-            <td><img src="PLACEHOLDER_SPP_8" alt="8 spp"></td>
-            <td><img src="PLACEHOLDER_SPP_16" alt="16 spp"></td>
-            <td><img src="PLACEHOLDER_SPP_64" alt="64 spp"></td>
-            <td><img src="PLACEHOLDER_SPP_1024" alt="1024 spp"></td>
-        </tr>
-    </table>
-			
+			<!--<img src="images/part4-renders/blob.png" alt="Empty Box" style="width:50%; margin:2px;" />
+			<img src="images/part4-renders/bunny.png" alt="Empty Box" style="width:50%; margin:2px;" />-->
+
+
+			<h3>Global Illumination Rendering</h3>
+			<table>
+				<tr>
+					<th>Direct Illumination</th>
+					<th>Indirect Illumination</th>
+				</tr>
+				<tr>
+					<td><img src="images/part4-renders/direct.png" alt="Global Illumination Render"></td>
+					<td><img src="images/part4-renders/indirect.png" alt="Global Illumination Render"></td>
+				</tr>
+			</table>
+
+
+
 			<p>
-				Direct lighting with uniform hemisphere sampling: we know that the light being reflected from any point to another point is going to be the same. Therefore, I could just sample across the entire hemisphere instead of the individual lights in the scene. I still randomly sampled from the hemisphere, though. I had to add epsilon values to my shadow ray and its min/max values in case of overlap. Then, I checked if the shadow intersected any objects. I accumulated the radiance over all the objects, normalized it using the PDF, and returned the value.
+				Having max bounces = 2 means that you get a lot of the initial bounce light from your light. This helps create depth in the final rasterized image. On the other hand, max bounces = 3 creates a less obvious effect. Overall, it's darker than max bounces = 2. There's still a sense of what the geometry looks like, though. Both of these create a 3-D effect in the final raster.
 			</p>
 
 			<p>
-				Direct lighting with importance sampling: since this only samples from the lights, it creates less noise as we are not checking where the light does not hit. Using the same reflectance equation as uniform hemisphere sampling, we were able to calculate whether or not a shadow ray intersected with an object in the scene, as well as the total outgoing light. We also used is_delta_light() to check whether or not the light was a point light, and epsilon values to account for overlapping values and potential floating point errors. Finally, we implemented a simple check in one_bounce_radiance to return either hemisphere or importance sampling. We made sure to multiply it by the normalizing factors, like the cosine theta of the ray.
+				At high max bounce levels, the difference between the different images for accumulated light is very minimal. This is because most of the light has dissapated by the time that the 4th or 5th bounce happens. It's only really in the 2nd and 3rd that most of the effect happens.
 			</p>
 
-			<p>
-				The difference between hemisphere and importance sampling is that the latter produces a much smoother result than hemisphere sampling. The former samples all areas in the hemisphere, which means that it samples areas that the light doesn't hit and creates extra noise. Importance sampling only samples areas that the light hits, weighting it accordingly. Therefore, the result looks nicer.
-			</p>
+			<table>
+				<tr>
+					<td>
+						<img src="images/part4-renders/rr0.png" style="width:50%" />
+					</td>
+					<td>
+						<img src="images/part4-renders/rr1.png" style="width:50%" />
+					</td>
+					<td>
+						<img src="images/part4-renders/rr2.png" style="width:50%" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img src="images/part4-renders/rr3.png" style="width:50%" />
+					</td>
+					<td>
+						<img src="images/part4-renders/rr4.png" style="width:50%" />
+					</td>
+					<td>
+						<img src="images/part4-renders/rr5.png" style="width:50%" />
+					</td>
+				</tr>
+			</table>
 
-			<h2>Part 4: Global Illumination</h2>
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+
+			<a style="text-align:center"><h3>Top to bottom, left to right: 0, 1, 2, 3, 4, 5 max_ray_depths Russian Roulette</h3></a>
+
+
+			<table>
+				<tr>
+					<td>
+						<img src="images/part4-renders/spp1.png" style="width:50%" />
+					</td>
+					<td>
+						<img src="images/part4-renders/spp2.png" style="width:50%" />
+					</td>
+					<td>
+						<img src="images/part4-renders/spp3.png" style="width:50%" />
+					</td>
+					<td>
+						<img src="images/part4-renders/spp8.png" style="width:50%" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img src="images/part4-renders/spp16.png" style="width:50%" />
+					</td>
+					<td>
+						<img src="images/part4-renders/spp64.png" style="width:50%" />
+					</td>
+					<td>
+						<img src="images/part4-renders/spp1024.png" style="width:50%" />
+					</td>
+				</tr>
+			</table>
+			<a style="text-align:center"><h3>Top to bottom, left to right:1, 2, 4, 8, 16, 64, 1024 samples per pixel</h3></a>
+
 
 			<h2>Part 5: Adaptive Sampling</h2>
+			<p>
+				Implementing adaptive sampling is fairly simple; I mostly modified pathfinder.cpp and changed how I generated rays. I used modulo to check every samplesPerBatch samples whether or not the criteria for stopping had been reached. In my for loop, I kept a consistent counter of the mean and mean squared so that I could make the necessary standard deviation and inequality checks with respect to I and maxTolerance. Then, if the criteria was met, I threw a break statement to end the for loop.
+			</p>
 
-<<<<<<< HEAD
 			<img src="images/part5/shpere.png" alt="1 spp">
 			<img src="images/part5/sphere_rate.png" alt="1 spp">
-			
-			<h2>(Optional) Part 6: Extra Credit Opportunities</h2>
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-=======
-			Implementing adaptive sampling is fairly simple; I mostly modified pathfinder.cpp and changed how I generated rays. I used modulo to check every samplesPerBatch samples whether or not the criteria for stopping had been reached. In my for loop, I kept a consistent counter of the mean and mean squared so that I could make the necessary standard deviation and inequality checks with respect to I and maxTolerance. Then, if the criteria was met, I threw a break statement to end the for loop.
->>>>>>> fda5f70c0ff33ec96bcc5b8ce6620d1557580c7f
 
+			<p>
+				Note: the grader may notice that this seems a bit incomplete. I defend myself by saying that I spent the majority of the time debugging my partner's ChatGPT generated code. Let this be an additional lesson to myself to not work with people who will do that.
+			</p>
 		</div>
 	</body>
 </html>
