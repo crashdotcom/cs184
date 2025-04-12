@@ -1,0 +1,315 @@
+<html>
+	<head>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+		<style>
+			h1 {
+				text-align: center;
+			}
+
+			.container {
+				margin: 0 auto;
+				padding: 60px 20%;
+			}
+
+			figure {
+				text-align: center;
+			}
+
+			img {
+				display: inline-block;
+			}
+
+			body {
+				font-family: 'Inter', sans-serif;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>CS184/284A Spring 2025 Homework 4 Write-Up</h1>
+			<div style="text-align: center;">Names: Jay Yoo</div>
+
+			<br>
+
+			Link to webpage: <a href="https://crashdotcom.github.io/cs184/hw4">link</a>
+
+			<br>
+
+			Link to GitHub repository: <a href="https://github.com/cal-cs184-student/sp25-hw4-rawrxd">that's me !</a>
+
+			<!--<figure>
+		<img src="clothsim.png" alt="Cloth draped over sphere" style="width:70%"/>
+		<figcaption>You can add images with captions!</figcaption>
+	</figure>-->
+			<!--
+	We've already added one heading per part, to make your write-up as navigable when grading. Please fit your write-up within these sections!
+	-->
+
+			<h2>Overview</h2>
+			Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+
+			In this homework, I implemented a cloth simulator. I implemented concepts from prior homeworks like sphere/ray intersection and implementing different shading models. I also learned how to model fabric and different materials in a way that I didn't think they'd be--that is, using vertices and springs--which I thought was very cool.
+
+			<h2>Part 1: Masses and springs</h2>
+			<div style="display:flex; flex-direction:column;align-items:center">
+				<table style="width:50%; text-align:center; border-collapse:collapse">
+					<tr>
+						<td>
+							<img src="images/p11.png" width="400px" />
+						</td>
+						<td>
+							<img src="images/p12.png" width="400px" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<img src="images/p13.png" width="400px" />
+						</td>
+						<td>
+							<img src="images/p14.png" width="400px" />
+						</td>
+					</tr>
+				</table>
+			</div>
+			<a><h3>TL: Everything. TR: just shear. BL: only shear. BR: close up of mesh</h3></a>
+			<!--Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+	<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
+	<div style="display: flex; flex-direction: column; align-items: center;">
+		<table style="width: 100%; text-align: center; border-collapse: collapse;">
+		  <tr>
+			<td style="text-align: center;">
+			  <img src="clothsim.png" width="400px"/>
+			  <figcaption>Caption goes here.</figcaption>
+			</td>
+			<td style="text-align: center;">
+			  <img src="clothsim.png" width="400px"/>
+			  <figcaption>Caption goes here.</figcaption>
+			</td>
+		  </tr>
+		  <tr>
+			<td style="text-align: center;">
+			  <img src="clothsim.png" width="400px"/>
+			  <figcaption>Caption goes here.</figcaption>
+			</td>
+			<td style="text-align: center;">
+			  <img src="clothsim.png" width="400px"/>
+			  <figcaption>Caption goes here.</figcaption>
+			</td>
+		  </tr>
+		</table>
+	</div>-->
+
+			<h2>Part 2: Simulation via numerical integration</h2>
+
+			<img src="images/p21.png" width="400px" />
+			<h3>pinned4.json</h3>
+			<p>
+				At a low ks, the cloth behaves very stiffly. It falls without much deformation to a resting state with few wrinkles. At a high ks, the cloth almost rebounds when it falls. There's much more motion, and the final resting state is very smooth.
+			</p>
+			<p>
+				At a low density, the fabric--at least in pinned4.json, does not fall nearly as much as at a high density. The fabric stretches less. And at a high density, the fabric seems much heavier. The fabric also ripples and "rebounds" in different patterns.
+			</p>
+			<p>
+				For a low damping, the fabric ripples a lot and wrinkles deeply upon itself. It almost makes the fabric look "thinner", as the folds and creases are very fine. And for a high damping, there are almost no wrinkles at all. The fabric falls a lot slower and appears much smoother.
+			</p>
+
+			<table>
+				<tr>
+					<td>
+						<img src="images/p22.png" width="300px"/>
+					</td>
+					<td>
+						<img src="images/p23.png" width="300px" />
+					</td>
+					<td>
+						<img src="images/p24.png" width="300px" />
+					</td>
+				</tr>
+			</table>
+			<h3>L: low ks. M: high ks. R: low damping.</h3>
+
+
+			<h2>Part 3: Handling collisions with other objects</h2>
+			<table>
+				<tr>
+					<td>
+						<img src="images/p31.png" width="300px" />
+					</td>
+					<td width="300px">
+						<img src="images/p32.png" width="300px" />
+					</td>
+					<td width="300px">
+						<img src="images/p31.png" width="300px" />
+					</td>
+				</tr>
+			</table>
+			<h3>L: ks=5000. M: ks=500. R: ks=50000</h3>
+			<p>
+				At ks=500: the fabric falls very tightly onto the sphere. The fabric seems to cling to it thinly. At ks=50000, it falls a lot more loosely; the wrinkles look much larger and the fabric almost looks thicker as a result.
+			</p>
+
+			<img src="images/p34.png" , width="400px" />
+			<h3>plane.json</h3>
+
+			<p>
+				For handling intersection with spheres: I found the location of the point mass relative to the sphere. Then, I checked whether it was in the sphere. If it was, I found ray from the origin through the point mass to the surface of the sphere, then adjusted the position of the point mass accordingly.
+			</p>
+			<p>
+				Similarly for planes, I used the plane ray intersection formulas to find the point at which the point mass intersected with the plane--extending the ray from last_position to position. Then, using the dot product of that point with the position and last_position, I was able to see if the point mass had crossed it by seeing if the dot product was positive or negative. Then, I adjusted the point mass position accordingly, making sure to offset it.
+			</p>
+
+			<h2>Part 4: Handling self-collisions</h2>
+
+			<p>
+				To handle self collisions, I first had to build the hash map to hold all the point masses. I divided up the masses by modulo'ing them and assigned them to the map by treating each coordinate like how I would any other set of 3-D coordinates. That is, multiplying z by the "width" and "height" (number of separate "boxes" along those axes), multiplying y by the width, etc.
+			</p>
+			<p>
+				Then, in self_collide(), I fetched all the points in the same box as the point mass I was comparing them against. Then I looped through them, making sure to not compare it against itself. I found the distance between them. If the distance was less than 2 * thickness, I adjusted accordingly.
+			</p>
+
+			<table>
+				<tr>
+					<td>
+						<img src="images/p517.png" width="300px" />
+					</td>
+					<td>
+						<img src="images/p518.png" width="300px" />
+					</td>
+					<td>
+						<img src="images/p519.png" width="300px" />
+					</td>
+				</tr>
+			</table>
+			<h3>L: first contact. M: halfway. R: final resting state</h3>
+
+			<p>
+				At a low density, the fabric falls with much larger folds. At a high density, the fabric ripples a lot more as it falls and gathers upon itself more finely. And to the inverse, at a high ks the fabric falls with large folds. It almost seems springier; it takes a lot longer to get to a final resting state and "bounces" more than the default constants.
+			</p>
+
+			<table>
+				<tr>
+					<td>
+						<img src="images/p521.png" width="400px" />
+					</td>
+					<td>
+						<img src="images/p522.png" width="400px" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img src="images/p523.png" width="400px" />
+					</td>
+					<td>
+						<img src="images/p524.png" width="400px" />
+					</td>
+				</tr>
+
+			</table>
+			<h3>TL: low ks. TR: high ks. BL: low density. BR: high density.</h3>
+			<h2>Part 5: Shaders</h2>
+			<p>
+				A shader program controls the material properties for how an object is rendered. Through fragment and vertex shaders, we are able to control things like the reflectivity, the way light passes through the material, and the actual texture of it, like if it will look bumpy or smooth. The vertex shader affects the texture and the amount with which the surface of the object differs from the base shape. The fragment shader affects the reflectivity/light and how the object is rendered in the viewport.
+			</p>
+			<p>
+				The Blinn-Phong shading model is comprised of three parts: the ambient, diffuse, and specular shading. The ambient light just decribes the base shade of the object. Diffuse light creates matte shadows and highlights that are smooth. And specular light creates what look like pinpoints of light on the object; they are bright and oftentimes harsher than the other kinds of light. Controlling specularity does a lot for what kind of material an object is made out of.
+			</p>
+
+			<table>
+				<tr>
+					<td>
+						<img src="images/p51.png" width="400px" />
+					</td>
+					<td>
+						<img src="images/p52.png" width="400px" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img src="images/p53.png" width="400px" />
+					</td>
+					<td>
+						<img src="images/p54.png" width="400px" />
+					</td>
+				</tr>
+			</table>
+			<h3>TL: Blinn-Phong. TR: only ambient. BL: only diffuse. BR: only specular.</h3>
+
+			<table>
+				<tr>
+					<td>
+						<img src="images/p55.png" width="400px" />
+					</td>
+					<td>
+						<img src="images/p56.png" width="400px" />
+					</td>
+				</tr>
+			</table>
+			<h3>L: custom texture map on sphere/cloth. R: texture map used.</h3>
+
+
+			<table>
+				<tr>
+					<td>
+						<img src="images/p57.png" width="400px" />
+					</td>
+					<td>
+						<img src="images/p58.png" width="400px" />
+					</td>
+				</tr>
+			</table>
+			<h3>L: bump map on cloth. R: bump map on sphere.</h3>
+
+			<img src="images/p59.png" width="400px" />
+			<h3>displacement map on cloth.</h3>
+
+
+			<table>
+				<tr>
+					<td>
+						<img src="images/p511.png" width="400px" />
+					</td>
+					<td>
+						<img src="images/p512.png" width="400px" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img src="images/p513.png" width="400px" />
+					</td>
+					<td>
+						<img src="images/p514.png" width="400px" />
+					</td>
+				</tr>
+			</table>
+			<h3>TL: bump; 16. TR: displacement; 16. BL: bump; 128. BR: displacement; 128.</h3>
+
+			<p>
+				The different coarseness values honestly don't seem to affect how the shader reacts to the sphere that much. Perhaps it's because I'm using a shader with a much lower contrast, but even the low coarseness value picks up the subtle details in the sphere pretty well. The shine also looks fairly similar.
+			</p>
+
+			<table>
+				<tr>
+					<td>
+						<img src="images/p515.png" width="400px" />
+					</td>
+					<td>
+						<img src="images/p516.png" width="400px" />
+					</td>
+				</tr>
+			</table>
+			<h3>L: mirror on sphere. R: mirror on cloth.</h3>
+			<!--<h2>Additional Notes (please remove)</h2>
+	<ul>
+		<li>You can also add code if you'd like as so: <code>code code code</code></li>
+		<li>If you'd like to add math equations,
+			<ul>
+				<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
+				<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
+			</ul>
+		</li>
+	</ul>-->
+		</div>
+	</body>
+</html>
